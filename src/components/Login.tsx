@@ -32,7 +32,8 @@ export class Login extends React.Component {
 
         return (
             <div>
-                <header className="Login-header">
+                <header className="Login-header"/>
+                <body className="Login-body">
                     <img src={logo} className="Login-logo" alt="logo" />
                     <FormGroup controlId="email">
                         <br/>
@@ -53,7 +54,7 @@ export class Login extends React.Component {
                         </Row>
                     </FormGroup>
                     <Button className="Login-button" onClick={this.login}>Log in</Button>
-                </header>
+                </body>
             </div>
         )
     }

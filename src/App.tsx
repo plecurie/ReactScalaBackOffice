@@ -8,7 +8,9 @@ import {
 } from 'react-router-dom'
 import {auth} from "./services/Authentication.service";
 import {Login} from "./components/Login";
+import {Home} from "./components/Home";
 
+// @ts-ignore
 const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (
         auth.isAuthenticated === true
@@ -16,8 +18,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
             : <Redirect to='/login' />
     )} />
 );
-
-const Home = () => <h3>Home</h3>;
 
 function App() {
   return (

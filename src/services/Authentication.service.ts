@@ -1,10 +1,14 @@
 export const auth = {
     isAuthenticated: false,
-    authenticate(cb) {
+
+    authenticate(_: { cb: any }) {
+        let cb = _.cb;
         this.isAuthenticated = true;
         setTimeout(cb, 100) // fake async
     },
-    signout(cb) {
+
+    signout(_: { cb: any }) {
+        let cb = _.cb;
         this.isAuthenticated = false;
         setTimeout(cb, 100) // fake async
     }

@@ -17,12 +17,10 @@ export class Login extends React.Component {
         redirect: false
     };
     login = () => {
-        auth.authenticate({
-            callback: () => {
-                this.setState(() => ({
-                    redirect: true
-                }))
-            }
+        auth.authenticate(() => {
+            this.setState(() => ({
+                redirect: true
+            }))
         })
     };
     render() {

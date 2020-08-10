@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from "react";
 import logo from "../assets/images/logo.svg";
 import {auth} from "../services/Authentication.service";
-import {Redirect} from 'react-router-dom'
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import FormGroup from "react-bootstrap/FormGroup";
 import Row from "react-bootstrap/Row";
 import '../assets/css/Login.css';
+import {useAppContext} from "../libs/contextLib";
+import {useHistory} from "react-router-dom";
 
-export const Login = (props: any) => {
+export const Login = () => {
 
-    const { from } = props.location.state || { from: { pathname: "/home" } };
-    const [redirect, setRedirect] = useState(false);
+    const { userHasAuthenticated }: any = useAppContext();
+    const history = useHistory();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -24,22 +26,19 @@ export const Login = (props: any) => {
         }
     }, [username, password]);
 
-    const handleSubmit = () => {
-        auth.signin(() => {
-            alert(auth.isAuthenticated);
-            setRedirect(true);
-        })
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+        await auth.signin(() => {
+            userHasAuthenticated(true);
+            history.push("/");
+        });
     };
 
     const handleKeyPress = (e:any) => {
         if (e.keyCode === 13 || e.which === 13) {
-            isButtonDisabled || handleSubmit();
+            isButtonDisabled || handleSubmit(e);
         }
     };
-
-    if (redirect === true || auth.isAuthenticated === true) {
-        return <Redirect to={from} />
-    }
 
     return (
         <div>
@@ -79,7 +78,7 @@ export const Login = (props: any) => {
                 <br/>
                 <Button
                     className="Login-button"
-                    onClick={() => handleSubmit()}
+                    onClick={(e: any) => handleSubmit(e)}
                     disabled={isButtonDisabled}>
                     Log in</Button>
             </body>

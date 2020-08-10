@@ -1,11 +1,9 @@
-import React, {useState} from "react";
+import React from "react";
 import '../assets/css/Import.css';
-
 // @ts-ignore
-import { StyledDropZone } from 'react-drop-zone'
 import 'react-drop-zone/dist/styles.css'
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Button, Carousel, Jumbotron} from "react-bootstrap";
 import {NavbarHeader} from "./NavbarHeader";
@@ -40,7 +38,7 @@ export const Import = () => {
     return (
         <div>
             <NavbarHeader/>
-            <head className="Import-head">Importing a new database.</head>
+            <head className="Import-head"><title>Importing a new database.</title></head>
             <div className="Import-body">
                 <Carousel style={{minWidth: 300, maxWidth: 500, maxHeight: 500, margin: 'auto'}}>
                     <Carousel.Item>

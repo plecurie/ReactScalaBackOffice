@@ -1,26 +1,48 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Routes} from "./routes";
-import {BrowserRouter as Router} from "react-router-dom";
-import {auth} from "./services/Authentication.service";
+import {AppContext} from "./libs/contextLib";
+import {Auth} from "aws-amplify";
 
-const AuthBar = () => {
-    return (auth.isAuthenticated
-        ? ( <p style={{backgroundColor:'lemongreen', minHeight:'30px', fontWeight:'bold'}}> Welcome! </p>)
-        : ( <p style={{backgroundColor:'orangered', minHeight:'30px', fontWeight:'bold'}}> You are not logged in. </p>))
-};
 
 function App() {
-    return (
-        <div className="App">
-            <Router>
-                <AuthBar/>
-                <Routes />
-            </Router>
-        </div>
 
-    );
+    const [isAuthenticated, userHasAuthenticated] = useState(false);
+    const [isAuthenticating, setIsAuthenticating] = useState(true);
+
+    useEffect(() => {
+        onLoad();
+    }, []);
+
+    async function onLoad() {
+        try {
+            await Auth.currentSession();
+            userHasAuthenticated(true);
+        }
+        catch(e) {
+            if (e !== 'No current user') {
+                //alert(e);
+            }
+        }
+
+        setIsAuthenticating(false);
+    }
+
+    const AuthBar = () => {
+        return (isAuthenticated
+            ? ( <p style={{backgroundColor:'green', minHeight:'30px', fontWeight:'bold'}}> Welcome! </p>)
+            : ( <p style={{backgroundColor:'orangered', minHeight:'30px', fontWeight:'bold'}}> You are not logged in. </p>))
+    };
+
+
+    return !isAuthenticating && <div className="App">
+        <AuthBar/>
+        <AppContext.Provider value={{isAuthenticated, userHasAuthenticated}}>
+            <Routes/>
+        </AppContext.Provider>
+    </div>;
+
 }
 
 export default App;

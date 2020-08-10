@@ -1,4 +1,4 @@
-import {Redirect, Route} from "react-router";
+import {Redirect, Route, useLocation} from "react-router";
 import {Login} from "./components/Login";
 import {Home} from "./components/Home";
 import {Products} from "./components/Products";
@@ -7,34 +7,70 @@ import {Buylists} from "./components/Buylists";
 import {Import} from "./components/Import";
 import {BrowserRouter as Router} from "react-router-dom";
 import React from "react";
-import {auth} from "./services/Authentication.service";
+import {useAppContext} from "./libs/contextLib";
 
 // @ts-ignore
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const AuthenticatedRoute = ({ children, ...rest }) => {
 
-    return(
-        <Route {...rest} render={(props) => (
-            auth.isAuthenticated === true
-                ? <Component {...props} />
-                : <Redirect to={{
-                    pathname: '/login',
-                    state: { from: props.location }
-                }} />
-        )} />
-    )
+    const { pathname, search } = useLocation();
+    const { isAuthenticated }: any = useAppContext();
+    return (
+        <Route {...rest}>
+            {isAuthenticated ? (
+                children
+            ) : (
+                <Redirect to={
+                    `/login?redirect=${pathname}${search}`
+                } />
+            )}
+        </Route>
+    );
 };
+
+function querystring(name: string, url = window.location.href) {
+    name = name.replace(/[[]]/g, "\\$&");
+
+    const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)", "i");
+    const results = regex.exec(url);
+
+    if (!results) {
+        return null;
+    }
+    if (!results[2]) {
+        return "";
+    }
+
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+// @ts-ignore
+const UnauthenticatedRoute = ({children, ...rest }) => {
+    const { isAuthenticated }: any = useAppContext();
+    const redirect = querystring('redirect');
+    return (
+        <Route {...rest}>
+            {!isAuthenticated ? (
+                children
+            ) : (
+                <Redirect to={redirect === "" || redirect === null ? "/home" : redirect} />
+            )}
+        </Route>
+    );
+};
+
+
 
 export const Routes = () => {
     return (
         <Router>
             <div>
-                <Route exact path="/"> <Redirect to="/home" /></Route>
-                <Route path="/login" component={Login} />
-                <PrivateRoute path='/home' component={Home} />
-                <PrivateRoute path='/dashboard/products' component={Products} />
-                <PrivateRoute path='/dashboard/contracts' component={Contracts} />
-                <PrivateRoute path='/dashboard/buylists' component={Buylists} />
-                <PrivateRoute path='/import' component={Import} />
+                <UnauthenticatedRoute exact path="/"><Redirect to="/home" /></UnauthenticatedRoute>
+                <UnauthenticatedRoute exact path="/login"><Login /></UnauthenticatedRoute>
+                <AuthenticatedRoute exact path='/home'><Home /></AuthenticatedRoute>
+                <AuthenticatedRoute exact path='/dashboard/products' ><Products /></AuthenticatedRoute>
+                <AuthenticatedRoute exact path='/dashboard/contracts'><Contracts /></AuthenticatedRoute>
+                <AuthenticatedRoute exact path='/dashboard/buylists'><Buylists /></AuthenticatedRoute>
+                <AuthenticatedRoute exact path='/import'><Import /></AuthenticatedRoute>
             </div>
         </Router>
     )

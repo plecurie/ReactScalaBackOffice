@@ -8,7 +8,7 @@ export const auth = {
         setTimeout(cb, 100) // fake async
     },
 
-    signout(cb: any) {
+    logout(cb: any) {
         this.isAuthenticated = false;
         setTimeout(cb, 100) // fake async
     },

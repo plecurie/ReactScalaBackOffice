@@ -1,0 +1,41 @@
+
+.Dashboard-head {
+    background-color: #282c34;
+    min-height: 10vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.Dashboard-body {
+    background-color: #282c34;
+    min-height: 88.1vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+
+.button {
+    height: 50px;
+    width: 200px;
+    border-radius: 10px;
+    background-color: turquoise;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

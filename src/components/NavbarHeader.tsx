@@ -1,34 +1,50 @@
 import React from "react";
-
 // @ts-ignore
 import {Button, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {auth} from "../services/Authentication.service";
-import {withRouter} from "react-router";
+import {Link, useHistory} from "react-router-dom";
+import {useAppContext} from "../libs/contextLib";
 
-export const NavbarHeader = withRouter(({ history}) => {
+export const NavbarHeader = () => {
+
+    const { userHasAuthenticated }: any = useAppContext();
+    const history = useHistory();
 
     return (
 
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-            <Navbar.Brand href="/home">CleanMyShare</Navbar.Brand>
+            <Navbar.Brand>
+                <Link to="/home">CleanMyShare</Link>
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
                     <NavDropdown title="Dashboard" id="collasible-nav-dropdown">
-                        <NavDropdown.Item href="/dashboard/products">Funds</NavDropdown.Item>
-                        <NavDropdown.Item href="/dashboard/contracts">Contracts</NavDropdown.Item>
-                        <NavDropdown.Item href="/dashboard/buylist">Buylists</NavDropdown.Item>
+                        <NavDropdown.Item>
+                            <Link to="/dashboard/products"> Funds </Link>
+                        </NavDropdown.Item>
+                        <NavDropdown.Item>
+                            <Link to="/dashboard/contracts">Contracts </Link>
+                        </NavDropdown.Item>
+                        <NavDropdown.Item>
+                            <Link to="/dashboard/buylists">Buylists </Link>
+                        </NavDropdown.Item>
                     </NavDropdown>
-                    <Nav.Link href="/import">Import</Nav.Link>
+                    <Nav.Link>
+                        <Link to="/import">Import </Link>
+                    </Nav.Link>
                 </Nav>
                 <Nav>
                     <Nav.Link>
                         <Button variant={'outline-info'}
                             onClick={() => {
-                                auth.signout(() => history.push("/login"));
+                                auth.logout(() => {
+                                    userHasAuthenticated(false);
+                                    history.push("/login")
+                                });
                             }}
                         >
-                            Sign out
+                            Log out
                         </Button>
                     </Nav.Link>
                 </Nav>
@@ -38,4 +54,4 @@ export const NavbarHeader = withRouter(({ history}) => {
     );
 
 
-});
+};

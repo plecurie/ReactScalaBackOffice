@@ -3,6 +3,7 @@ import {NavbarHeader} from "./NavbarHeader";
 import '../assets/css/Home.css';
 
 export const Home = () => {
+
     return (
         <>
             <NavbarHeader/>

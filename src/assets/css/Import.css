@@ -1,5 +1,5 @@
 
-.Home-head {
+.Import-head {
     background-color: #282c34;
     min-height: 10vh;
     display: flex;
@@ -10,7 +10,7 @@
     color: white;
 }
 
-.Home-body {
+.Import-body {
     background-color: #282c34;
     min-height: 88.1vh;
     display: flex;

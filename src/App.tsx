@@ -1,34 +1,26 @@
 import React from 'react';
 import './assets/css/App.css';
-import {
-    BrowserRouter as Router,
-    Link,
-    Route,
-    Redirect
-} from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Routes} from "./routes";
+import {BrowserRouter as Router} from "react-router-dom";
 import {auth} from "./services/Authentication.service";
-import {Login} from "./components/Login";
-import {Home} from "./components/Home";
 
-// @ts-ignore
-const PrivateRoute = ({ component: Component, ...rest }) => (
-    <Route {...rest} render={(props) => (
-        auth.isAuthenticated === true
-            ? <Component {...props} />
-            : <Redirect to='/login' />
-    )} />
-);
+const AuthBar = () => {
+    return (auth.isAuthenticated
+        ? ( <p style={{backgroundColor:'lemongreen', minHeight:'30px', fontWeight:'bold'}}> Welcome! </p>)
+        : ( <p style={{backgroundColor:'orangered', minHeight:'30px', fontWeight:'bold'}}> You are not logged in. </p>))
+};
 
 function App() {
-  return (
-      <Router>
-          <div>
-              <Route exact path="/"> <Redirect to="/home" /></Route>
-              <Route path="/login" component={Login} />
-              <PrivateRoute path='/home' component={Home} />
-          </div>
-      </Router>
-  );
+    return (
+        <div className="App">
+            <Router>
+                <AuthBar/>
+                <Routes />
+            </Router>
+        </div>
+
+    );
 }
 
 export default App;

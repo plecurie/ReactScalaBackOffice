@@ -28,20 +28,20 @@ function App() {
 
         setIsAuthenticating(false);
     }
-
+/*
     const AuthBar = () => {
         return (isAuthenticated
             ? ( <p style={{backgroundColor:'green', minHeight:'30px', fontWeight:'bold'}}> Welcome! </p>)
             : ( <p style={{backgroundColor:'orangered', minHeight:'30px', fontWeight:'bold'}}> You are not logged in. </p>))
     };
+*/
 
-
-    return !isAuthenticating && <div className="App">
-        <AuthBar/>
-        <AppContext.Provider value={{isAuthenticated, userHasAuthenticated}}>
-            <Routes/>
-        </AppContext.Provider>
-    </div>;
+    return !isAuthenticating &&
+        <div className="App">
+            <AppContext.Provider value={{isAuthenticated, userHasAuthenticated}}>
+                <Routes/>
+            </AppContext.Provider>
+        </div>;
 
 }
 

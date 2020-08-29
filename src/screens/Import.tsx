@@ -6,7 +6,7 @@ import axios from 'axios';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Button, Carousel, Jumbotron} from "react-bootstrap";
-import {NavbarHeader} from "./NavbarHeader";
+import {NavbarHeader} from "../components/NavbarHeader";
 import Dropzone from "react-dropzone";
 
 
@@ -36,7 +36,7 @@ export const Import = () => {
     };
 
     return (
-        <div>
+        <>
             <NavbarHeader/>
             <head className="Import-head"><title>Importing a new database.</title></head>
             <div className="Import-body">
@@ -104,7 +104,7 @@ export const Import = () => {
                 <br/>
                 <ToastContainer/>
             </div>
-        </div>
+        </>
 
     );
 };

@@ -41,7 +41,7 @@ export const Login = () => {
     };
 
     return (
-        <div>
+        <>
             <header className="Login-header"/>
             <body className="Login-body">
                 <img src={logo} className="Login-logo" alt="logo" />
@@ -82,6 +82,6 @@ export const Login = () => {
                     disabled={isButtonDisabled}>
                     Log in</Button>
             </body>
-        </div>
+        </>
     )
 };

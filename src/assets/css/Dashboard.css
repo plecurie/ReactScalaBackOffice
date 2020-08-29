@@ -1,7 +1,6 @@
 
 .Dashboard-head {
     background-color: #282c34;
-    min-height: 10vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,7 +11,7 @@
 
 .Dashboard-body {
     background-color: #282c34;
-    min-height: 88.1vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;

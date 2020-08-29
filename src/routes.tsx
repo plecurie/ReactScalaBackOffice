@@ -1,10 +1,10 @@
 import {Redirect, Route, useLocation} from "react-router";
-import {Login} from "./components/Login";
-import {Home} from "./components/Home";
-import {Products} from "./components/Products";
-import {Contracts} from "./components/Contracts";
-import {Buylists} from "./components/Buylists";
-import {Import} from "./components/Import";
+import {Login} from "./screens/Login";
+import {Home} from "./screens/Home";
+import {Products} from "./screens/Products";
+import {Contracts} from "./screens/Contracts";
+import {Buylists} from "./screens/Buylists";
+import {Import} from "./screens/Import";
 import {BrowserRouter as Router} from "react-router-dom";
 import React from "react";
 import {useAppContext} from "./libs/contextLib";

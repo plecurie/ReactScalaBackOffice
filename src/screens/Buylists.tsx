@@ -1,8 +1,9 @@
 import * as React from "react";
-import {NavbarHeader} from "./NavbarHeader";
+import {NavbarHeader} from "../components/NavbarHeader";
 import '../assets/css/Dashboard.css';
 
-export const Contracts = () => {
+
+export const Buylists = () => {
     return (
         <>
             <NavbarHeader/>

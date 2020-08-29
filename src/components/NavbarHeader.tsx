@@ -1,8 +1,9 @@
 import React from "react";
 // @ts-ignore
-import {Button, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {Button, Container, Nav, Navbar, NavbarBrand, NavDropdown} from "react-bootstrap";
 import {auth} from "../services/Authentication.service";
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 import {useAppContext} from "../libs/contextLib";
 
 export const NavbarHeader = () => {
@@ -11,28 +12,29 @@ export const NavbarHeader = () => {
     const history = useHistory();
 
     return (
-
+        <Container>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-            <Navbar.Brand>
-                <Link to="/home">CleanMyShare</Link>
-            </Navbar.Brand>
+            <LinkContainer to="/home">
+                <NavbarBrand>CleanMyShare </NavbarBrand>
+            </LinkContainer>
+
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
                     <NavDropdown title="Dashboard" id="collasible-nav-dropdown">
-                        <NavDropdown.Item>
-                            <Link to="/dashboard/products"> Funds </Link>
-                        </NavDropdown.Item>
-                        <NavDropdown.Item>
-                            <Link to="/dashboard/contracts">Contracts </Link>
-                        </NavDropdown.Item>
-                        <NavDropdown.Item>
-                            <Link to="/dashboard/buylists">Buylists </Link>
-                        </NavDropdown.Item>
+                        <LinkContainer to="/dashboard/products">
+                            <NavDropdown.Item > Funds </NavDropdown.Item>
+                        </LinkContainer>
+                        <LinkContainer to="/dashboard/contracts">
+                            <NavDropdown.Item > Contracts </NavDropdown.Item>
+                        </LinkContainer>
+                        <LinkContainer to="/dashboard/buylists">
+                            <NavDropdown.Item > Buylists </NavDropdown.Item>
+                        </LinkContainer>
                     </NavDropdown>
-                    <Nav.Link>
-                        <Link to="/import">Import </Link>
-                    </Nav.Link>
+                    <LinkContainer to="/import">
+                        <Nav.Link >Import </Nav.Link>
+                    </LinkContainer>
                 </Nav>
                 <Nav>
                     <Nav.Link>
@@ -50,7 +52,7 @@ export const NavbarHeader = () => {
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
-
+        </Container>
     );
 
 

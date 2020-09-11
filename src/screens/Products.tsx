@@ -9,22 +9,58 @@ import {NavbarHeader} from "../components/NavbarHeader";
 export const Products = () => {
 
     const [products, setProducts] = useState([]);
+    const [last, setLast] = useState('');
+    const [isFetching, setIsFetching] = useState(false);
     const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         updateProducts();
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    useEffect(() => {
+        if (!isFetching) return;
+        fetchMoreListItems();
+    }, [isFetching]);
+
+    const fetchMoreListItems = () => {
+        updateProducts();
+        setIsFetching(false);
+    };
 
     const updateProducts = async () => {
         setIsError(false);
         try {
-            const response = await fetch('https://api.prod.scala-patrimoine.fr/products', {method: 'POST'});
+
+            let last_product = {
+                product_name: last
+            };
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(last_product)
+            };
+
+            const response = await fetch('https://api.prod.scala-patrimoine.fr/products', options);
             const results = await response.json();
-            setProducts(results.data);
+
+            // @ts-ignore
+            setProducts(prevState => [...prevState, ...results.data]);
+            setLast(results.data[results.data.length - 1]._source.product_name);
         }
         catch(err) {
             setIsError(true);
         }
+    };
+
+    const handleScroll = () => {
+        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight)
+            return;
+        setIsFetching(true);
     };
 
     return (
@@ -51,6 +87,7 @@ export const Products = () => {
                                 <ProductDetails product={product}/>
                             ))}
                         </ListGroup>
+                        {isFetching && <h1>Fetching more list items...</h1>}
                     </div>
                 </div>
             </div>

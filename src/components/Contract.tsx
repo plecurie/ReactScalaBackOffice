@@ -4,11 +4,9 @@ import React from "react";
 const Contract = ({ contract }) => {
     return (
         <>
-            <h3>
-                <h4>Name: {contract.name}</h4>
-                <h4>Euro fees: {contract.euro_fees}</h4>
-                <h4>UC fees: {contract.uc_fees}</h4>
-            </h3>
+            <td>{contract.name}</td>
+            <td>{contract.euro_fees}</td>
+            <td>{contract.uc_fees}</td>
         </>
     )
 };

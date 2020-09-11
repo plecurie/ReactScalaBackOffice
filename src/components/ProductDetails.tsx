@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Badge, Button, Alert} from "react-bootstrap";
+import {Badge, Button, Alert, Table} from "react-bootstrap";
 import Contract from "./Contract";
 import Criteria from "./Criteria";
 
@@ -38,20 +38,55 @@ const ProductDetails = ({ product }) => {
                 <Alert.Heading>
                     <Badge variant="light">{details._source.isincode}</Badge>
                 </Alert.Heading>
-                <h3>Product name: {details._source.product_name}</h3>
-                <h3>Firm name: {details._source.firm_name}</h3>
-                <h3>Category: {details._source.category}</h3>
-                <h3>Ongoing charge: {details._source.ongoingcharge}</h3>
-                <h3>
-                    Contracts : {details._source.contracts.map((contract: any) => (
-                        <Contract contract={contract}/>
-                    ))}
-                </h3>
-                <h3>
-                    Criteria : {details._source.criteria.map((criteria: any) => (
-                        <Criteria criteria={criteria}/>
-                    ))}
-                </h3>
+                <Table responsive>
+                    <tbody>
+                        <tr>
+                            <th>Product_name:</th>
+                            <td>{details._source.product_name}</td>
+                        </tr>
+                        <tr>
+                            <th>Firm_name:</th>
+                            <td>{details._source.firm_name}</td>
+                        </tr>
+                        <tr>
+                            <th>Global_Category:</th>
+                            <td>{details._source.category}</td>
+                        </tr>
+                        <tr>
+                            <th>Ongoing_charge:</th>
+                            <td>{details._source.ongoingcharge}</td>
+                        </tr>
+                        <tr>
+                            <th>Contracts:</th>
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Frais_Fonds_Euro</th>
+                                        <th>Frais_UC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {details._source.contracts.map((contract: any) => (
+                                    <tr>
+                                        <td>{contract.name}</td>
+                                        <td>{contract.euro_fees}</td>
+                                        <td>{contract.uc_fees}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </Table>
+                        </tr>
+                        <tr>
+                            <th>Criteria:</th>
+                            {details._source.criteria.map((criteria: any) => (
+                                <td>
+                                    <Criteria criteria={criteria}/>
+                                </td>
+                            ))}
+                        </tr>
+                    </tbody>
+                </Table>
                 <hr/>
                 <div className="d-flex justify-content-end">
                     <Button onClick={() => setShow(false)} variant="outline-success">
@@ -65,7 +100,6 @@ const ProductDetails = ({ product }) => {
                 <Button key={product._id} value={product} variant="outline-success" onClick={() => setShow(true)}>
                     <h3> {product._source.isincode}</h3>
                     <h3> {product._source.product_name}</h3>
-                    <h3> {product._source.firm_name}</h3>
                 </Button>
             }
             <br/>

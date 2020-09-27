@@ -26,7 +26,7 @@ export const Contracts = () => {
                 },
             };
 
-            const response = await fetch('https://api.prod.scala-patrimoine.fr/contracts', options);
+            const response = await fetch('http://localhost:3100/contracts', options);
             const results = await response.json();
 
             setContracts(results.data);

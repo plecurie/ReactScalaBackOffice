@@ -34,7 +34,7 @@ export const Explorer = () => {
     const updateProducts = async() => {
         try {
             if (isFetching) {
-                const response = await fetch('https://api.prod.scala-patrimoine.fr/products/suggest/'+ input, {method: 'GET'});
+                const response = await fetch('http://localhost:3100/products/suggest/'+ input, {method: 'GET'});
                 const results = await response.json();
                 if (results.data[0].length !== 0) {
                     // @ts-ignore

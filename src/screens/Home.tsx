@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core';
 // @ts-ignore
 import {Search, BusinessCenter, CloudUpload, LibraryBooks} from "@material-ui/icons";
-import {authService} from "../services/Authentication.service";
 
 const useGridStyles = makeStyles(({ breakpoints }) => ({
     root: {
@@ -99,10 +98,8 @@ export const Home = () => {
             <div className="Home-body">
                     <Grid classes={gridStyles} container spacing={3} >
                         <Grid item xs={2} onClick={ () => {
-                            authService.logout(() => {
-                                userHasAuthenticated(true);
-                                history.push("/dashboard/explorer")
-                            });
+                            userHasAuthenticated(true);
+                            history.push("/dashboard/explorer")
                         }}>
                             <CustomCard
                                 classes={styles}
@@ -112,10 +109,8 @@ export const Home = () => {
                             />
                         </Grid>
                         <Grid item xs={2} onClick={ () => {
-                            authService.logout(() => {
-                                userHasAuthenticated(true);
-                                history.push("/dashboard/products")
-                            });
+                            userHasAuthenticated(true);
+                            history.push("/dashboard/products")
                         }}>
                             <CustomCard
                                 classes={styles2}
@@ -125,10 +120,8 @@ export const Home = () => {
                             />
                         </Grid>
                         <Grid item xs={2} onClick={ () => {
-                            authService.logout(() => {
-                                userHasAuthenticated(true);
-                                history.push("/dashboard/contracts")
-                            });
+                            userHasAuthenticated(true);
+                            history.push("/dashboard/products")
                         }}>
                             <CustomCard
                                 classes={styles3}
@@ -138,10 +131,8 @@ export const Home = () => {
                             />
                         </Grid>
                         <Grid item xs={2} onClick={ () => {
-                            authService.logout(() => {
-                                userHasAuthenticated(true);
-                                history.push("/dashboard/import")
-                            });
+                            userHasAuthenticated(true);
+                            history.push("/dashboard/products")
                         }}>
                             <CustomCard
                                 classes={styles4}

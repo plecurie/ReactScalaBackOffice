@@ -1,10 +1,6 @@
 
 export const excelService = {
 
-    isAuthenticated: false,
-
-
-
     verifyHeaders(headers:[], str: string) {
         let missings: any[] = [];
         let h: string[] = [];

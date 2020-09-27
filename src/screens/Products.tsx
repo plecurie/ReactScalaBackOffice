@@ -52,7 +52,7 @@ export const Products = () => {
                 body: JSON.stringify(last_product)
             };
 
-            const response = await fetch('https://api.prod.scala-patrimoine.fr/products', options);
+            const response = await fetch('http://localhost:3100/products', options);
             const results = await response.json();
 
             if(results.data.length !== 0) {

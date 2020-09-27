@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {NavbarHeader} from "../components/NavbarHeader";
 import { makeStyles } from '@material-ui/core/styles';
-import {Typography, Paper, StepContent, StepLabel, Step, Stepper} from '@material-ui/core';
+import {Typography, Paper, StepContent, StepLabel, Step, Stepper, Snackbar, CircularProgress} from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import {Button, Jumbotron} from "react-bootstrap";
 import Dropzone from "react-dropzone";
@@ -12,6 +12,10 @@ import {excelService} from "../services/Excel.service";
 
 // @ts-ignore
 import readXlsxFile from 'read-excel-file'
+import {useAppContext} from "../libs/contextLib";
+import {useHistory} from "react-router";
+import { green } from '@material-ui/core/colors';
+import {House} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,6 +28,14 @@ const useStyles = makeStyles((theme) => ({
     button: {
         marginTop: theme.spacing(1),
         marginRight: theme.spacing(1),
+    },
+    buttonProgress: {
+        color: green[500],
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
     },
     actionsContainer: {
         marginBottom: theme.spacing(2),
@@ -41,6 +53,8 @@ export const Import = () => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
     const [completed, setCompleted] = React.useState(false);
+    const { userHasAuthenticated }: any = useAppContext();
+    const history = useHistory();
     const steps = getSteps();
     const [productsFile, setProductsFile]= useState();
     const [contractsFile, setContractsFile]= useState();
@@ -49,8 +63,13 @@ export const Import = () => {
     const [missingContractHeaders, setMissingContractHeaders]= useState([]);
     const [missingBuylistHeaders, setMissingBuylistHeaders]= useState([]);
     const [show, setShow]=useState(false);
+    const [computing, setComputing]=useState(false);
+    const [updated, setUpdated]=useState(false);
+    const [open, setOpen] = React.useState(false);
+
 
     const onProductsDrop = (files: any) => {
+
         readXlsxFile(files[0]).then((rows: any) => {
             const headers : any[] = excelService.verifyHeaders(rows[0], "products");
             if(headers.length !== 0){
@@ -67,6 +86,7 @@ export const Import = () => {
     };
 
     const onContractsDrop = (files: any) => {
+
         readXlsxFile(files[0]).then((rows: any) => {
             const headers : any[] = excelService.verifyHeaders(rows[0], "contracts");
             if(headers.length !== 0){
@@ -83,6 +103,7 @@ export const Import = () => {
     };
 
     const onBuylistsDrop = (files: any) => {
+
         readXlsxFile(files[0]).then((rows: any) => {
             const headers : any[] = excelService.verifyHeaders(rows[0], "buylists");
             if(headers.length !== 0){
@@ -98,6 +119,12 @@ export const Import = () => {
         });
     };
 
+    const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway')
+            return;
+        setOpen(false);
+    };
+
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setCompleted(false)
@@ -107,9 +134,32 @@ export const Import = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleSend = () => {
-        alert("Sent!")
+    const goHome = () => {
+        userHasAuthenticated(true);
+        history.push("/home")
     };
+
+    const handleSend = async () => {
+        const data = new FormData();
+
+        data.append('files', productsFile, 'InputProducts.xlsx');
+        data.append('files', contractsFile, 'InputContracts.xlsx');
+        data.append('files', buylistsFile, 'InputBuylists.xlsx');
+
+        const response = await fetch('http://localhost:3100/products/_updatedb', {
+            method: 'POST',
+            body: data,
+        });
+
+        const results = await response.json();
+
+        if(results.updated){
+            setOpen(true);
+            setUpdated(true);
+        }
+
+    };
+
 
     return (
         <>
@@ -142,7 +192,7 @@ export const Import = () => {
                                             )
                                             :( <li className="list-group-item list-group-item-success"> {productsFile.name} </li> )}
                                             {show && (
-                                                <Alert severity="warning"><h3>Missing:</h3>
+                                                <Alert severity="warning"><h3>En-têtes manquants :</h3>
                                                     <ul>
                                                         {missingProductHeaders.map((header) =>(
                                                             <li>
@@ -221,7 +271,7 @@ export const Import = () => {
                                                 onClick={handleBack}
                                                 className={classes.button}
                                             >Précédent</Button>
-                                            {(activeStep !== 0 && activeStep !== steps.length) ?(
+                                            {(activeStep !== 0 && activeStep !== steps.length) ? (
                                                 <>
                                                     <Button
                                                         variant="success"
@@ -230,7 +280,8 @@ export const Import = () => {
                                                         onClick={handleNext}
                                                         className={classes.button}
                                                     >{'Suivant'}</Button>
-                                                </>
+                                                    {computing && <CircularProgress size={24} className={classes.buttonProgress}/>}
+                                                    </>
                                             )
                                             :(
                                                 <>
@@ -250,13 +301,32 @@ export const Import = () => {
                     </Stepper>
                     {activeStep === steps.length && (
                         <Paper style={{height: 200}}>
-                            <Typography>Toutes les étapes ont été complétées.</Typography>
+                            <Typography style={{marginLeft: 90}}>Toutes les étapes ont été complétées.</Typography>
                             <br/>
-                            <Button variant="success" size="lg"  onClick={handleSend}>
-                                <CloudUploadIcon /> Mettre à jour la base de données
-                            </Button>
+
+                                {updated ? (
+                                    <Button variant="info" style={{marginLeft: 90}} size="lg" onClick={goHome}>
+                                        <div>
+                                            <House/> Retourner à l'accueil
+                                        </div>
+                                    </Button>
+                                ) : (
+                                    <Button variant="success" style={{marginLeft: 90}} size="lg" onClick={handleSend}>
+                                        <div>
+                                            <CloudUploadIcon /> Mettre à jour la base de données
+                                        </div>
+                                    </Button>
+                                )}
+
                         </Paper>
                     )}
+                    <div>
+                        <Snackbar style={{marginLeft: 30}} open={open} autoHideDuration={6000} onClose={handleClose}>
+                            <Alert onClose={handleClose} severity="success" variant="filled">
+                                Fichiers envoyés avec succès !
+                            </Alert>
+                        </Snackbar>
+                    </div>
                 </div>
         </>
     );

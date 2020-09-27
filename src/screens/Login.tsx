@@ -8,21 +8,9 @@ import Row from "react-bootstrap/Row";
 import '../assets/css/Login.css';
 import {useAppContext} from "../libs/contextLib";
 import {useHistory} from "react-router-dom";
-import {createStyles, Grid, TextField, Theme} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
 import {AccountCircle, VpnKey} from "@material-ui/icons";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        margin: {
-            margin: theme.spacing(1),
-        },
-    }),
-);
-
 export const Login = () => {
-
-    const classes = useStyles();
 
     const { userHasAuthenticated }: any = useAppContext();
     const history = useHistory();

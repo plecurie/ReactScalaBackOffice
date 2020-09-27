@@ -1,9 +1,10 @@
 import * as React from "react";
 import '../assets/css/Dashboard.css';
-import {Button, Form, FormControl, ListGroup} from "react-bootstrap";
+import {Button, ListGroup} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import ProductDetails from "../components/ProductDetails";
 import {NavbarHeader} from "../components/NavbarHeader";
+import {Skeleton} from "@material-ui/lab";
 
 
 export const Products = () => {
@@ -29,6 +30,12 @@ export const Products = () => {
         setIsFetching(false);
     };
 
+    const handleScroll = () => {
+        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight)
+            return;
+        setIsFetching(true);
+    };
+
     const updateProducts = async () => {
         setIsError(false);
         try {
@@ -48,46 +55,40 @@ export const Products = () => {
             const response = await fetch('https://api.prod.scala-patrimoine.fr/products', options);
             const results = await response.json();
 
-            // @ts-ignore
-            setProducts(prevState => [...prevState, ...results.data]);
-            setLast(results.data[results.data.length - 1]._source.product_name);
+            if(results.data.length !== 0) {
+                // @ts-ignore
+                setProducts(prevState => [...prevState, ...results.data]);
+                setLast(results.data[results.data.length - 1]._source.product_name);
+            }
+
         }
         catch(err) {
             setIsError(true);
         }
     };
 
-    const handleScroll = () => {
-        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight)
-            return;
-        setIsFetching(true);
-    };
-
     return (
         <>
             <NavbarHeader/>
-            {isError &&
-                <div className="Dashboard-body">
-                    <div>Something went wrong ...</div>
-                </div>
-            }
             <div className="Dashboard-body">
                 <br/>
-                <Form inline>
-                    <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                    <Button variant="outline-info">Search</Button>
-                </Form>
-                <br/>
-                <h2>All available funds</h2>
-                <br/>
+                <h2>Fonds d'investissement disponibles</h2>
                 <div>
                     <div className='container'>
-                        <ListGroup style={{width: 750}}>
-                            {products.map(product => (
-                                <ProductDetails product={product}/>
-                            ))}
-                        </ListGroup>
-                        {isFetching && <h1>Fetching more list items...</h1>}
+                        {isError &&
+                            <div className="Dashboard-body">
+                                <h4>Une erreur est survenue ...</h4>
+                            </div>
+                        }
+                        <br/>
+                        {isFetching
+                            ? <Skeleton><Button/></Skeleton>
+                            : <ListGroup style={{width: 1200}}>
+                                {products.map(product => (
+                                    <ProductDetails product={product}/>
+                                ))}
+                            </ListGroup>
+                        }
                     </div>
                 </div>
             </div>

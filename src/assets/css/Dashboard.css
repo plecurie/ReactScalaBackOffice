@@ -10,8 +10,9 @@
 }
 
 .Dashboard-body {
-    background-color: #282c34;
+    background-color: #ffffff;
     min-height: 100vh;
+    width: 200vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,6 +21,28 @@
     color: white;
 }
 
+h2 {
+     color: #282c34;
+ }
+
+h3 {
+    color: #282c34;
+}
+
+h4 {
+    color: #282c34;
+    margin-top: -80vh;
+    margin-left: -80vh;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.badge {
+    text-transform: capitalize;
+    vertical-align: center;
+}
 
 .button {
     height: 50px;

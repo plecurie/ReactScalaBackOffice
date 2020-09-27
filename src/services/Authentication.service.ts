@@ -1,9 +1,9 @@
 
-export const auth = {
+export const authService = {
 
     isAuthenticated: false,
 
-    signin(cb: any) {
+    signin(username: string, password: string, cb: any) {
         this.isAuthenticated = true;
         setTimeout(cb, 100) // fake async
     },

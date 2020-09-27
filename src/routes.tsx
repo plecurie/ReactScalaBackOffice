@@ -3,8 +3,8 @@ import {Login} from "./screens/Login";
 import {Home} from "./screens/Home";
 import {Products} from "./screens/Products";
 import {Contracts} from "./screens/Contracts";
-import {Buylists} from "./screens/Buylists";
 import {Import} from "./screens/Import";
+import {Explorer} from "./screens/Explorer";
 import {BrowserRouter as Router} from "react-router-dom";
 import React from "react";
 import {useAppContext} from "./libs/contextLib";
@@ -67,10 +67,10 @@ export const Routes = () => {
                 <UnauthenticatedRoute exact path="/"><Redirect to="/home" /></UnauthenticatedRoute>
                 <UnauthenticatedRoute exact path="/login"><Login /></UnauthenticatedRoute>
                 <AuthenticatedRoute exact path='/home'><Home /></AuthenticatedRoute>
+                <AuthenticatedRoute exact path='/dashboard/explorer' ><Explorer /></AuthenticatedRoute>
                 <AuthenticatedRoute exact path='/dashboard/products' ><Products /></AuthenticatedRoute>
                 <AuthenticatedRoute exact path='/dashboard/contracts'><Contracts /></AuthenticatedRoute>
-                <AuthenticatedRoute exact path='/dashboard/buylists'><Buylists /></AuthenticatedRoute>
-                <AuthenticatedRoute exact path='/import'><Import /></AuthenticatedRoute>
+                <AuthenticatedRoute exact path='/dashboard/import'><Import /></AuthenticatedRoute>
             </div>
         </Router>
     )

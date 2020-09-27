@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import logo from "../assets/images/logo.svg";
-import {auth} from "../services/Authentication.service";
+import {authService} from "../services/Authentication.service";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import FormGroup from "react-bootstrap/FormGroup";
@@ -8,8 +8,21 @@ import Row from "react-bootstrap/Row";
 import '../assets/css/Login.css';
 import {useAppContext} from "../libs/contextLib";
 import {useHistory} from "react-router-dom";
+import {createStyles, Grid, TextField, Theme} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {AccountCircle, VpnKey} from "@material-ui/icons";
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        margin: {
+            margin: theme.spacing(1),
+        },
+    }),
+);
 
 export const Login = () => {
+
+    const classes = useStyles();
 
     const { userHasAuthenticated }: any = useAppContext();
     const history = useHistory();
@@ -28,7 +41,7 @@ export const Login = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        await auth.signin(() => {
+        await authService.signin(username, password, () => {
             userHasAuthenticated(true);
             history.push("/");
         });
@@ -48,30 +61,28 @@ export const Login = () => {
                 <FormGroup controlId="email">
                     <br/>
                     <Row>
-                        <Form.Label>Email address</Form.Label>
-                    </Row>
-                    <Row>
+                        <AccountCircle style={{ fontSize: 50 }} />
                         <Form.Control
                             className="Login-form"
                             type="email"
-                            placeholder="Enter email"
+                            placeholder="Entrer email"
                             onChange={(e) => setUsername(e.target.value)}
                             onKeyPress={(e: any) => handleKeyPress(e)}
+                            style={{marginLeft: 10}}
                         />
                     </Row>
                 </FormGroup>
                 <br/>
                 <FormGroup controlId="password" >
                     <Row>
-                        <Form.Label>Password</Form.Label>
-                    </Row>
-                    <Row>
+                        <VpnKey style={{ fontSize: 50 }} />
                         <Form.Control
                             className="Login-form"
                             type="password"
-                            placeholder="Password"
+                            placeholder="Entrer mot de passe"
                             onChange={(e)=>setPassword(e.target.value)}
                             onKeyPress={(e: any)=>handleKeyPress(e)}
+                            style={{marginLeft: 10}}
                         />
                     </Row>
                 </FormGroup>
@@ -80,7 +91,7 @@ export const Login = () => {
                     className="Login-button"
                     onClick={(e: any) => handleSubmit(e)}
                     disabled={isButtonDisabled}>
-                    Log in</Button>
+                    Se Connecter</Button>
             </body>
         </>
     )

@@ -1,9 +1,11 @@
 import React from "react";
 // @ts-ignore
-import {Button, Container, Nav, Navbar, NavbarBrand, NavDropdown} from "react-bootstrap";
-import {auth} from "../services/Authentication.service";
+import {Button, Container, Nav, Navbar} from "react-bootstrap";
+import {authService} from "../services/Authentication.service";
 import {useHistory} from "react-router-dom";
+// @ts-ignore
 import { LinkContainer } from "react-router-bootstrap";
+import logo from "../assets/images/logo.svg";
 import {useAppContext} from "../libs/contextLib";
 
 export const NavbarHeader = () => {
@@ -13,46 +15,69 @@ export const NavbarHeader = () => {
 
     return (
         <Container>
-        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-            <LinkContainer to="/home">
-                <NavbarBrand>CleanMyShare </NavbarBrand>
-            </LinkContainer>
+        <Navbar collapseOnSelect expand="lg" variant="dark">
+            <Navbar.Brand href='#' onClick={()=> {
+                userHasAuthenticated(true);
+                history.push("/home")
+            }}>
+                <img
+                    alt=""
+                    src={logo}
+                    width="40"
+                    height="40"
+                    className="d-inline-block align-text-top"
+                />{'#CleanMyShare'}
+            </Navbar.Brand>
 
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+
+            <Navbar.Collapse/>
+            <Navbar.Collapse/>
             <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav className="mr-auto">
-                    <NavDropdown title="Dashboard" id="collasible-nav-dropdown">
+                <Nav fill variant="pills" className="justify-content-end">
+
+                        <LinkContainer to="/dashboard/explorer">
+                            <Nav.Link > Exploration </Nav.Link>
+                        </LinkContainer>
+
                         <LinkContainer to="/dashboard/products">
-                            <NavDropdown.Item > Funds </NavDropdown.Item>
+                            <Nav.Link> Fonds </Nav.Link>
                         </LinkContainer>
+
                         <LinkContainer to="/dashboard/contracts">
-                            <NavDropdown.Item > Contracts </NavDropdown.Item>
+                            <Nav.Link> Contrats </Nav.Link>
                         </LinkContainer>
-                        <LinkContainer to="/dashboard/buylists">
-                            <NavDropdown.Item > Buylists </NavDropdown.Item>
+
+                        <LinkContainer to="/dashboard/import">
+                            <Nav.Link >Import </Nav.Link>
                         </LinkContainer>
-                    </NavDropdown>
-                    <LinkContainer to="/import">
-                        <Nav.Link >Import </Nav.Link>
-                    </LinkContainer>
+
                 </Nav>
+            </Navbar.Collapse>
+            <Navbar.Collapse className="justify-content-end">
                 <Nav>
-                    <Nav.Link>
+                    <Nav.Link >
                         <Button variant={'outline-info'}
-                            onClick={() => {
-                                auth.logout(() => {
-                                    userHasAuthenticated(false);
-                                    history.push("/login")
-                                });
-                            }}
+                                onClick={() => {
+                                    authService.logout(() => {
+                                        userHasAuthenticated(false);
+                                        history.push("/login")
+                                    });
+                                }}
                         >
-                            Log out
+                            Se déconnecter
                         </Button>
                     </Nav.Link>
                 </Nav>
             </Navbar.Collapse>
+
+
+
+
+
         </Navbar>
         </Container>
+
     );
 
 

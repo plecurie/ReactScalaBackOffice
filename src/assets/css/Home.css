@@ -11,8 +11,9 @@
 }
 
 .Home-body {
-    background-color: #282c34;
-    min-height: 92.5vh;
+    background-color: #ffffff;
+    height: 92vh;
+    width: 200vh;
     display: flex;
     flex-direction: column;
     align-items: center;

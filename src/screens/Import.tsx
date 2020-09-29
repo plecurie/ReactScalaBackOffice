@@ -1,21 +1,18 @@
 import React, {useState} from 'react';
-import {NavbarHeader} from "../components/NavbarHeader";
-import { makeStyles } from '@material-ui/core/styles';
-import {Typography, Paper, StepContent, StepLabel, Step, Stepper, Snackbar, CircularProgress} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import {Button, Jumbotron} from "react-bootstrap";
-import Dropzone from "react-dropzone";
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import {useHistory} from "react-router";
+import readHeaders from '../services/parser/readHeaders'
+import verifyHeaders from '../services/parser/verifyHeaders'
 import {ColorlibConnector, ColorlibStepIcon} from "../components/IconStepper";
 import Instructions from "../components/Instructions";
-import {excelService} from "../services/Excel.service";
-
-// @ts-ignore
-import readXlsxFile from 'read-excel-file'
+import {NavbarHeader} from "../components/NavbarHeader";
 import {useAppContext} from "../libs/contextLib";
-import {useHistory} from "react-router";
-import { green } from '@material-ui/core/colors';
+import {Button, Jumbotron} from "react-bootstrap";
+import Dropzone from "react-dropzone";
 import {House} from "@material-ui/icons";
+import {Typography, Paper, StepContent, StepLabel, Step, Stepper, Snackbar, makeStyles} from '@material-ui/core';
+import { green } from '@material-ui/core/colors';
+import { Alert } from '@material-ui/lab';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,71 +49,53 @@ function getSteps() {
 export const Import = () => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
-    const [completed, setCompleted] = React.useState(false);
+    const [completed, setCompleted] = React.useState<{ [k: number]: boolean }>({1: false, 2: false, 3: false});
     const { userHasAuthenticated }: any = useAppContext();
     const history = useHistory();
     const steps = getSteps();
     const [productsFile, setProductsFile]= useState();
     const [contractsFile, setContractsFile]= useState();
     const [buylistsFile, setBuylistsFile]= useState();
-    const [missingProductHeaders, setMissingProductHeaders]= useState([]);
-    const [missingContractHeaders, setMissingContractHeaders]= useState([]);
-    const [missingBuylistHeaders, setMissingBuylistHeaders]= useState([]);
+    const [missingHeaders, setMissingHeaders]= useState([]);
     const [show, setShow]=useState(false);
-    const [computing, setComputing]=useState(false);
+    const [loading, setLoading]=useState(false);
     const [updated, setUpdated]=useState(false);
     const [open, setOpen] = React.useState(false);
 
-
-    const onProductsDrop = (files: any) => {
-
-        readXlsxFile(files[0]).then((rows: any) => {
-            const headers : any[] = excelService.verifyHeaders(rows[0], "products");
-            if(headers.length !== 0){
-                // @ts-ignore
-                setMissingProductHeaders(headers);
-                setShow(true);
-            }
-            else {
-                setShow(false);
-                setProductsFile(files[0]);
-                setCompleted(true);
-            }
-        });
+    const onProductsDrop = async (files: any) => {
+        setLoading(true);
+        const readedHeaders = await readHeaders(files[0]);
+        const missingHeaders = await verifyHeaders(readedHeaders, "products");
+        handleMissingHeaders(files[0], missingHeaders);
     };
 
-    const onContractsDrop = (files: any) => {
-
-        readXlsxFile(files[0]).then((rows: any) => {
-            const headers : any[] = excelService.verifyHeaders(rows[0], "contracts");
-            if(headers.length !== 0){
-                // @ts-ignore
-                setMissingContractHeaders(headers);
-                setShow(true);
-            }
-            else {
-                setShow(false);
-                setContractsFile(files[0]);
-                setCompleted(true)
-            }
-        });
+    const onContractsDrop = async (files: any) => {
+        setLoading(true);
+        const readedHeaders = await readHeaders(files[0]);
+        const missingHeaders = await verifyHeaders(readedHeaders, "contracts");
+        handleMissingHeaders(files[0], missingHeaders);
     };
 
-    const onBuylistsDrop = (files: any) => {
+    const onBuylistsDrop = async (files: any) => {
+        setLoading(true);
+        const readedHeaders = await readHeaders(files[0]);
+        const missingHeaders = await verifyHeaders(readedHeaders, "buylists");
+        handleMissingHeaders(files[0], missingHeaders);
+    };
 
-        readXlsxFile(files[0]).then((rows: any) => {
-            const headers : any[] = excelService.verifyHeaders(rows[0], "buylists");
-            if(headers.length !== 0){
-                // @ts-ignore
-                setMissingBuylistHeaders(headers);
-                setShow(true);
-            }
-            else {
-                setShow(false);
-                setBuylistsFile(files[0]);
-                setCompleted(true);
-            }
-        });
+    const handleComplete = () => {
+        const newCompleted = completed;
+        newCompleted[activeStep] = true;
+        setCompleted(newCompleted);
+        handleNext();
+    };
+
+    const handleNext = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    };
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
@@ -125,18 +104,22 @@ export const Import = () => {
         setOpen(false);
     };
 
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setCompleted(false)
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const goHome = () => {
-        userHasAuthenticated(true);
-        history.push("/home")
+    const handleMissingHeaders = (file: File, missingHeaders: any[]) => {
+        setLoading(false);
+        if (missingHeaders.length !== 0) {
+            // @ts-ignore
+            setMissingHeaders(missingHeaders);
+            setShow(true);
+        } else {
+            switch (activeStep) {
+                case 1: { setProductsFile(file); break; }
+                case 2: { setContractsFile(file); break; }
+                case 3: { setBuylistsFile(file); break; }
+                default: break
+            }
+            setShow(false);
+            handleComplete()
+        }
     };
 
     const handleSend = async () => {
@@ -160,6 +143,11 @@ export const Import = () => {
 
     };
 
+    const goHome = () => {
+        userHasAuthenticated(true);
+        history.push("/home")
+    };
+
 
     return (
         <>
@@ -178,7 +166,7 @@ export const Import = () => {
                                     }
                                     {activeStep === 1 && (
                                         <>
-                                            {!productsFile && !completed ? (
+                                            {!completed[activeStep] ? (
                                                 <Dropzone onDrop={onProductsDrop} accept={['.csv',
                                                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                                                 'application/vnd.ms-excel']}>
@@ -191,23 +179,12 @@ export const Import = () => {
                                                 </Dropzone>
                                             )
                                             :( <li className="list-group-item list-group-item-success"> {productsFile.name} </li> )}
-                                            {show && (
-                                                <Alert severity="warning"><h3>En-têtes manquants :</h3>
-                                                    <ul>
-                                                        {missingProductHeaders.map((header) =>(
-                                                            <li>
-                                                                {header}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </Alert>
-                                            )}
                                             <br/>
                                         </>
                                     )}
                                     {activeStep === 2 && (
                                         <>
-                                            {!contractsFile && !completed ? (
+                                            {!completed[activeStep] ? (
                                                 <Dropzone onDrop={onContractsDrop} accept={['.csv',
                                                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                                                 'application/vnd.ms-excel']}>
@@ -220,23 +197,12 @@ export const Import = () => {
                                                 </Dropzone>
                                             )
                                             :( <li className="list-group-item list-group-item-success"> {contractsFile.name} </li> )}
-                                            {show && (
-                                                <Alert severity="warning"><h3>Missing:</h3>
-                                                    <ul>
-                                                        {missingContractHeaders.map((header) =>(
-                                                            <li>
-                                                                {header}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </Alert>
-                                            )}
                                             <br/>
                                         </>
                                     )}
                                     {activeStep === 3 && (
                                         <>
-                                            {!buylistsFile && !completed ? (
+                                            {!completed[activeStep] ? (
                                                 <Dropzone onDrop={onBuylistsDrop} accept={['.csv',
                                                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                                                 'application/vnd.ms-excel']}>
@@ -249,19 +215,19 @@ export const Import = () => {
                                                 </Dropzone>
                                             )
                                             :(<li className="list-group-item list-group-item-success"> {buylistsFile.name} </li>)}
-                                            {show && (
-                                                <Alert severity="warning"><h3>Missing:</h3>
-                                                    <ul>
-                                                        {missingBuylistHeaders.map((header) =>(
-                                                            <li>
-                                                                {header}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </Alert>
-                                            )}
                                             <br/>
                                         </>
+                                    )}
+                                    {loading && (<h3 style={{marginBottom: 50}}><strong>Vérification en cours ...</strong></h3>) }
+                                    {show && (
+                                        <Alert severity="warning">
+                                            <h3>En-têtes manquants :</h3>
+                                            <ul>
+                                                {missingHeaders.map((header) =>(
+                                                    <li>{header}</li>
+                                                ))}
+                                            </ul>
+                                        </Alert>
                                     )}
                                     <div className={classes.actionsContainer}>
                                         <div>
@@ -271,28 +237,13 @@ export const Import = () => {
                                                 onClick={handleBack}
                                                 className={classes.button}
                                             >Précédent</Button>
-                                            {(activeStep !== 0 && activeStep !== steps.length) ? (
-                                                <>
-                                                    <Button
-                                                        variant="success"
-                                                        disabled={!completed}
-                                                        color="default"
-                                                        onClick={handleNext}
-                                                        className={classes.button}
-                                                    >{'Suivant'}</Button>
-                                                    {computing && <CircularProgress size={24} className={classes.buttonProgress}/>}
-                                                    </>
-                                            )
-                                            :(
-                                                <>
-                                                    <Button
-                                                        variant="success"
-                                                        color="default"
-                                                        onClick={handleNext}
-                                                        className={classes.button}
-                                                    >{'Suivant'}</Button>
-                                                </>
-                                            )}
+                                            <Button
+                                                variant="success"
+                                                disabled={activeStep !== 0 && activeStep !== steps.length && !completed[activeStep]}
+                                                color="default"
+                                                onClick={handleNext}
+                                                className={classes.button}
+                                            >{'Suivant'}</Button>
                                         </div>
                                     </div>
                                 </StepContent>

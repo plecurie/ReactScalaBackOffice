@@ -1,11 +1,10 @@
 import * as React from "react";
+import {useEffect, useState} from "react";
 import '../assets/css/Dashboard.css';
 import {Button, ListGroup} from "react-bootstrap";
-import {useEffect, useState} from "react";
 import ProductDetails from "../components/ProductDetails";
 import {NavbarHeader} from "../components/NavbarHeader";
 import {Skeleton} from "@material-ui/lab";
-
 
 export const Products = () => {
 

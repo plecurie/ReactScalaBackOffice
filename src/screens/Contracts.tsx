@@ -1,10 +1,9 @@
 import * as React from "react";
-import {NavbarHeader} from "../components/NavbarHeader";
+import {useState, useEffect} from "react";
 import '../assets/css/Dashboard.css';
-import {useState} from "react";
-import {useEffect} from "react";
-import {ListGroup} from "react-bootstrap";
+import {NavbarHeader} from "../components/NavbarHeader";
 import Contract from "../components/Contract";
+import {ListGroup} from "react-bootstrap";
 
 export const Contracts = () => {
 

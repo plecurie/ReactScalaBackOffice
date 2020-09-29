@@ -1,14 +1,10 @@
-import {NavbarHeader} from "../components/NavbarHeader";
-import '../assets/css/Dashboard.css';
 import * as React from "react";
-import {Button, Col, FormGroup, ListGroup} from "react-bootstrap";
-import {useState} from "react";
-import {useEffect} from "react";
+import {useState, useEffect} from "react";
+import '../assets/css/Dashboard.css';
+import {NavbarHeader} from "../components/NavbarHeader";
 import ProductDetails from "../components/ProductDetails";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
+import {Button, Col, ListGroup, Form} from "react-bootstrap";
 import {TextField} from "@material-ui/core";
-
 
 export const Explorer = () => {
 

@@ -1,13 +1,10 @@
 import React, {useEffect, useState} from "react";
-import logo from "../assets/images/logo.svg";
-import {authService} from "../services/Authentication.service";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import FormGroup from "react-bootstrap/FormGroup";
-import Row from "react-bootstrap/Row";
-import '../assets/css/Login.css';
-import {useAppContext} from "../libs/contextLib";
 import {useHistory} from "react-router-dom";
+import '../assets/css/Login.css';
+import logo from "../assets/images/logo.svg";
+import {useAppContext} from "../libs/contextLib";
+import {authService} from "../services/Authentication.service";
+import {Form, Button, FormGroup, Row} from "react-bootstrap";
 import {AccountCircle, VpnKey} from "@material-ui/icons";
 
 export const Login = () => {

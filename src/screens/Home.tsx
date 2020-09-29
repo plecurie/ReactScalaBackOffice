@@ -4,16 +4,7 @@ import '../assets/css/Home.css';
 import {useAppContext} from "../libs/contextLib";
 import {useHistory} from "react-router";
 import Color from 'color';
-import {
-    Typography,
-    CardActionArea,
-    Card,
-    CardContent,
-    Grid,
-    makeStyles,
-    Icon
-} from '@material-ui/core';
-// @ts-ignore
+import {Typography, CardActionArea, Card, CardContent, Grid, makeStyles, Icon} from '@material-ui/core';
 import {Search, BusinessCenter, CloudUpload, LibraryBooks} from "@material-ui/icons";
 
 const useGridStyles = makeStyles(({ breakpoints }) => ({
@@ -65,6 +56,7 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
+// @ts-ignore
 const CustomCard = ({ classes, icon, title, subtitle }) => {
     return (
         <CardActionArea className={classes.actionArea} style={{width: 300}}>
@@ -121,7 +113,7 @@ export const Home = () => {
                         </Grid>
                         <Grid item xs={2} onClick={ () => {
                             userHasAuthenticated(true);
-                            history.push("/dashboard/products")
+                            history.push("/dashboard/contracts")
                         }}>
                             <CustomCard
                                 classes={styles3}
@@ -132,7 +124,7 @@ export const Home = () => {
                         </Grid>
                         <Grid item xs={2} onClick={ () => {
                             userHasAuthenticated(true);
-                            history.push("/dashboard/products")
+                            history.push("/dashboard/import")
                         }}>
                             <CustomCard
                                 classes={styles4}

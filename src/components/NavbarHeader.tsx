@@ -1,12 +1,11 @@
 import React from "react";
-// @ts-ignore
-import {Button, Container, Nav, Navbar} from "react-bootstrap";
-import {authService} from "../services/Authentication.service";
 import {useHistory} from "react-router-dom";
 // @ts-ignore
 import { LinkContainer } from "react-router-bootstrap";
 import logo from "../assets/images/logo.svg";
+import {authService} from "../services/Authentication.service";
 import {useAppContext} from "../libs/contextLib";
+import {Button, Container, Nav, Navbar} from "react-bootstrap";
 
 export const NavbarHeader = () => {
 
